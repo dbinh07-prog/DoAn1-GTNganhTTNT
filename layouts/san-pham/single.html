@@ -1,0 +1,1021 @@
+{{ define "main" }} {{/* Link đến file CSS */}} <link rel="stylesheet" href="{{
+"/css/product-style.css" | relURL }}">
+
+<article class="product-container">
+  <div class="product-grid">
+    <aside class="product-gallery">
+      {{ with .Params.featured_image }}
+      <img src="{{ . | relURL }}" alt="{{ $.Title }}" class="main-image" />
+      {{ else }}
+      <img
+        src="https://via.placeholder.com/600x600.png?text=Ch%C6%B0a+c%C3%B3+%E1%BA%A3nh"
+        alt="Chưa có ảnh"
+        class="main-image"
+      />
+      {{ end }}
+    </aside>
+
+    <main class="product-info">
+      <h1 id="product-title">{{ .Title }}</h1>
+      <ul class="quick-specs">
+        {{ range .Params.specifications }}
+        <li>{{ . }}</li>
+        {{ end }}
+      </ul>
+
+      <section class="product-section">
+        <h3>Chọn dung lượng</h3>
+        <div id="variant-options">
+          {{ range $i, $variant := .Params.variants }}
+          <input
+            type="radio"
+            id="variant-{{ $i }}"
+            name="variant"
+            value="{{ $variant.price }}"
+            data-name="{{ $variant.name }}"
+            {{
+            if
+            eq
+            $i
+            0
+            }}checked{{
+            end
+            }}
+          />
+          <label for="variant-{{ $i }}">{{ $variant.name }}</label>
+          {{ end }}
+        </div>
+      </section>
+
+      <section class="product-section">
+        <h3>Chọn màu sắc</h3>
+        <div id="color-label-options">
+          {{ range $i, $color := .Params.colors }}
+          <input
+            type="radio"
+            id="color-{{ $i }}"
+            name="color_option"
+            value="{{ $color.name }}"
+            {{
+            if
+            eq
+            $i
+            0
+            }}checked{{
+            end
+            }}
+          />
+          <label for="color-{{ $i }}"> {{ $color.name }} </label>
+          {{ end }}
+        </div>
+      </section>
+
+      <section class="product-section">
+        <h3>Chọn số lượng</h3>
+        <input id="quantity" type="number" value="1" min="1" />
+      </section>
+
+      <section class="product-section gift-section">
+        <h3>🎁 Quà tặng & Khuyến mãi</h3>
+        <ul class="gift-list">
+          <li>Bảo hành 1 năm chính hãng.</li>
+          <li>
+            <span class="gift-quantity" id="gift-quantity-badge">1</span>
+            củ sạc Belkin chính hãng.
+          </li>
+          <li>Voucher quay số may mắn (trừ vào giá).</li>
+        </ul>
+
+        <div class="voucher-spin">
+          <button id="spin-voucher-button">
+            <span class="spinner"></span>
+            <span class="button-text">Quay ngay để giảm giá</span>
+          </button>
+
+          <div id="voucher-result-coupon" class="voucher-result-coupon hidden">
+            <p class="congrats">Chúc mừng!</p>
+            <p class="amount" id="voucher-amount-text">500.000đ</p>
+            <p class="info" id="voucher-info-text">Đã trừ vào thành tiền</p>
+          </div>
+        </div>
+      </section>
+      <section class="product-section">
+        <input type="hidden" id="voucher-base-discount" value="0" />
+
+        <h3>Thành tiền: <span id="total-price">Đang tính...</span></h3>
+
+        <h4 id="final-price-display" class="hidden">
+          Giá cuối: <span id="final-price-text"></span>
+        </h4>
+      </section>
+
+      <section class="buttons">
+        <button id="add-to-cart">Thêm vào giỏ</button>
+        <button id="buy-now">Mua ngay</button>
+      </section>
+    </main>
+  </div>
+  <section class="tab-section">
+    <div class="tab-buttons">
+      <button
+        class="tab-button active"
+        onclick="openTab(event, 'tab-description')"
+      >
+        Mô tả chi tiết
+      </button>
+      <button class="tab-button" onclick="openTab(event, 'tab-specs')">
+        Thông số kỹ thuật
+      </button>
+      <button class="tab-button" onclick="openTab(event, 'tab-reviews')">
+        Đánh giá & Bình luận
+      </button>
+    </div>
+    <div id="tab-description" class="tab-content active" style="display: block">
+      {{ .Content }}
+    </div>
+    <div id="tab-specs" class="tab-content" style="display: none">
+      <h3>Thông số kỹ thuật chi tiết iPhone 12</h3>
+      <table class="tech-specs-table">
+        <tbody>
+          {{ range .Params.technical_specs }}
+          <tr>
+            <td>{{ .name }}</td>
+            <td>{{ .value }}</td>
+          </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tab-reviews" class="tab-content" style="display: none">
+      <div class="reviews-container-pro">
+        
+        <div class="reviews-summary-pro">
+          <div class="summary-left">
+            <div class="summary-score">
+              <span class="score-number">5</span>
+              <span class="score-total">/5</span>
+            </div>
+            <div class="star-icons-large">★★★★★</div>
+            <div class="summary-count">(8 lượt đánh giá)</div>
+          </div>
+          <div class="summary-right">
+            <div class="rating-bar-row">
+              <div class="star-label">5 ★</div>
+              <div class="rating-bar">
+                <div class="rating-bar-filled" style="width: 100%"></div>
+              </div>
+              <div class="star-count">8</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="star-label">4 ★</div>
+              <div class="rating-bar">
+                <div class="rating-bar-filled" style="width: 0%"></div>
+              </div>
+              <div class="star-count">0</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="star-label">3 ★</div>
+              <div class="rating-bar">
+                <div class="rating-bar-filled" style="width: 0%"></div>
+              </div>
+              <div class="star-count">0</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="star-label">2 ★</div>
+              <div class="rating-bar">
+                <div class="rating-bar-filled" style="width: 0%"></div>
+              </div>
+              <div class="star-count">0</div>
+            </div>
+            <div class="rating-bar-row">
+              <div class="star-label">1 ★</div>
+              <div class="rating-bar">
+                <div class="rating-bar-filled" style="width: 0%"></div>
+              </div>
+              <div class="star-count">0</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="review-write-button">Đánh giá sản phẩm</button>
+
+        <div class="reviews-header-pro">
+          <h3 class="reviews-title-pro">7 Bình luận</h3>
+          <div class="reviews-filter">
+            <button class="filter-btn active" data-filter="Tất cả">Tất cả</button>
+            <button class="filter-btn" data-filter="5">5 ★</button>
+            <button class="filter-btn" data-filter="4">4 ★</button>
+            <button class="filter-btn" data-filter="3">3 ★</button>
+            <button class="filter-btn" data-filter="2">2 ★</button>
+            <button class="filter-btn" data-filter="1">1 ★</button>
+          </div>
+        </div>
+
+        <div class="comment-input-area">
+          
+          <div class="comment-star-input">
+            <label>Đánh giá của bạn:</label>
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 sao">★</label>
+                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 sao">★</label>
+                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 sao">★</label>
+                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 sao">★</label>
+                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 sao">★</label>
+            </div>
+          </div>
+
+          <textarea
+            placeholder="Nhập nội dung bình luận..."
+            maxlength="3000"
+            id="comment-textarea"
+            oninput="document.getElementById('char-counter').textContent = this.value.length + '/3000'"
+          ></textarea>
+          <div class="comment-input-footer">
+            <span id="char-counter">0/3000</span>
+            <button id="submit-comment-btn">Gửi bình luận</button>
+          </div>
+        </div>
+
+        <div class="comment-list-pro" id="comment-list-pro">
+          
+          <div class="comment-item-pro" data-rating="5">
+            <div class="comment-avatar">H</div>
+            <div class="comment-content">
+              <div class="comment-author">
+                <strong>Huỳnh Văn Khánh</strong>
+                <span>• 2 tháng trước</span>
+              </div>
+              <div class="comment-stars">★★★★★</div>
+              <p class="comment-text">
+                Mình mua máy chủ yếu chơi CS:GO và Valorant. Thật sự FPS ổn định,
+                không lag, độ trễ gần như không có. Màn hình 16 inch vừa đủ để
+                quan sát các chi tiết nhỏ trong game. Quạt hơi ồn khi chơi
+                lâu nhưng không khó chịu
+              </p>
+            </div>
+          </div>
+          
+          <div class="comment-item-pro" data-rating="4">
+            <div class="comment-avatar">T</div>
+            <div class="comment-content">
+              <div class="comment-author">
+                <strong>Thảo A Páo</strong>
+                <span>• 2 tháng trước</span>
+              </div>
+              <div class="comment-stars">★★★★☆</div>
+              <p class="comment-text">
+                Mình thử render video 4K trên Premiere, CPU và GPU chạy ngon,
+                không giật, export nhanh. Màn hình màu sắc chuẩn, khá vừa
+                mắt. Nhìn chung đáp ứng tốt cho công việc đồ họa
+              </p>
+            </div>
+          </div>
+
+          <div class="comment-item-pro" data-rating="5">
+            <div class="comment-avatar">V</div>
+            <div class="comment-content">
+              <div class="comment-author">
+                <strong>Võ Ngọc Bích</strong>
+                <span>• 2 tháng trước</span>
+              </div>
+              <div class="comment-stars">★★★★★</div>
+              <p class="comment-text">
+                Nhân viên hỗ trợ cài đặt miễn phí các ứng dụng cơ bản, nhiệt
+                tình lắm
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    </section>
+
+  <a id="floating-cart-button" class="hidden">
+    <span class="cart-icon">🛒</span>
+    <span id="floating-cart-count" class="cart-badge">0</span>
+  </a>
+  <div id="confirmation-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <span class="close-modal" id="close-confirm-btn-x">&times;</span>
+      <h2>Xác nhận</h2>
+      <p>Bạn có chắc muốn thêm sản phẩm này vào giỏ hàng?</p>
+      <div class="cart-buttons">
+        <button id="cancel-add-to-cart">Hủy</button>
+        <button id="confirm-add-to-cart">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+  <div id="cart-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <span class="close-modal" id="close-cart-btn-x">&times;</span>
+      <h2>Giỏ hàng của bạn</h2>
+
+      <ul id="cart-item-list"></ul>
+
+      <div class="cart-total">
+        <strong>Tổng cộng:</strong>
+        <strong id="cart-total-price">0đ</strong>
+      </div>
+
+      <button id="clear-cart-button">Xóa giỏ hàng</button>
+
+      <div class="cart-buttons">
+        <button id="close-cart-modal">Tiếp tục mua sắm</button>
+        <button id="go-to-checkout">Đi đến thanh toán</button>
+      </div>
+    </div>
+  </div>
+  <div id="checkout-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <span class="close-modal" id="close-modal-btn">&times;</span>
+      <h2>Thông tin thanh toán</h2>
+      <div id="checkout-form">
+        <div class="form-group">
+          <label for="fullname">Họ và Tên</label>
+          <input type="text" id="fullname" placeholder="Nguyễn Văn A" />
+        </div>
+        <div class="form-group">
+          <label for="phone">Số điện thoại</label>
+          <input type="tel" id="phone" placeholder="09xxxxxxxx" />
+        </div>
+        <div class="form-group">
+          <label for="address">Địa chỉ (Số nhà, Tên đường)</label>
+          <input type="text" id="address" placeholder="123 Đường ABC" />
+        </div>
+        <div class="address-grid">
+          <div class="form-group">
+            <label for="ward">Phường/Xã</label>
+            <input type="text" id="ward" placeholder="Phường 1" />
+          </div>
+          <div class="form-group">
+            <label for="district">Quận/Huyện</label>
+            <input type="text" id="district" placeholder="Quận 1" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="city">Tỉnh/Thành phố</label>
+          <input type="text" id="city" placeholder="TP. Hồ Chí Minh" />
+        </div>
+        <hr />
+        <div class="form-group">
+          <h3>Phương thức thanh toán</h3>
+          <div class="payment-options">
+            <label>
+              <input type="radio" name="payment" value="cod" checked /> Thanh
+              toán khi nhận hàng (COD)
+            </LabeL>
+            <label>
+              <input type="radio" name="payment" value="bank" /> Chuyển khoản
+              ngân hàng
+            </label>
+          </div>
+        </div>
+        <div id="bank-info-details" class="hidden">
+          <h4>Thông tin chuyển khoản</h4>
+          <ul>
+            <li>
+              Số tiền: <strong id="bank-amount" style="color: #d70018"></strong>
+            </li>
+            <li>Ngân hàng: <strong>MB Bank (Ngân hàng Quân đội)</strong></li>
+            <li>Số tài khoản: <strong>0123456789</strong></li>
+            <li>Chủ tài khoản: <strong>NGUYEN VAN A</strong></li>
+            <li>Nội dung: <strong>[Số điện thoại của bạn]</strong></li>
+          </ul>
+        </div>
+        <div id="transaction-code-group" class="form-group hidden">
+          <label for="transaction-code">Mã giao dịch</label>
+          <input
+            type="text"
+            id="transaction-code"
+            placeholder="Nhập mã giao dịch từ ngân hàng của bạn"
+          />
+        </div>
+        <button id="confirm-order">Xác nhận đặt hàng</button>
+      </div>
+      <div id="checkout-success" class="hidden" style="text-align: center">
+        <h2 style="color: #28a745">Đặt hàng thành công!</h2>
+        <p>Cảm ơn bạn đã mua hàng</p>
+        <p>Chúng tôi sẽ chuyển hướng sau 3 giây...</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<script>
+  // Biến toàn cục (để logic 10 và 11 có thể dùng chung)
+  let cartItems = [];
+  let tempProductToAdd = null;
+  let currentCheckoutItems = [];
+  let filterButtons = null;
+  let commentItems = null;
+
+  /* ============================================= */
+  /* HÀM TIỆN ÍCH (Functions)
+    /* ============================================= */
+
+  // --- HÀM 1: Cập nhật giá tiền (trang chính) ---
+  function updateTotalPrice() {
+    const variantRadios = document.querySelectorAll(
+      '#variant-options input[name="variant"]'
+    );
+    const quantityInput = document.getElementById("quantity");
+    const totalPriceEl = document.getElementById("total-price");
+    let selectedPrice = 0;
+    
+    if (!quantityInput || !totalPriceEl || !variantRadios) return; 
+
+    for (const radio of variantRadios) {
+      if (radio.checked) {
+        selectedPrice = parseFloat(radio.value);
+        break;
+      }
+    }
+    const quantity = parseInt(quantityInput.value);
+    const total = selectedPrice * quantity;
+    totalPriceEl.textContent = formatCurrency(total);
+    const giftBadgeEl = document.getElementById("gift-quantity-badge");
+    if (giftBadgeEl) {
+      giftBadgeEl.textContent = quantity;
+    }
+    const baseVoucherDiscount = parseFloat(
+      document.getElementById("voucher-base-discount").value
+    );
+    const totalVoucherDiscount = baseVoucherDiscount * quantity;
+    const finalPriceDisplay = document.getElementById("final-price-display");
+    const finalPriceText = document.getElementById("final-price-text");
+    const voucherInfoText = document.getElementById("voucher-info-text");
+    if (totalVoucherDiscount > 0 && totalVoucherDiscount < total) {
+      const finalTotal = total - totalVoucherDiscount;
+      totalPriceEl.style.textDecoration = "line-through";
+      totalPriceEl.style.color = "#888";
+      totalPriceEl.style.fontSize = "1.5em";
+      finalPriceText.textContent = formatCurrency(finalTotal);
+      finalPriceDisplay.classList.remove("hidden");
+      if (quantity > 1 && voucherInfoText) {
+        voucherInfoText.textContent = `Đã áp dụng ${formatCurrency(
+          totalVoucherDiscount
+        )} (x${quantity}) vào thành tiền`;
+      } else if (voucherInfoText) {
+        voucherInfoText.textContent = "Đã trừ vào thành tiền";
+      }
+    } else {
+      totalPriceEl.style.textDecoration = "none";
+      totalPriceEl.style.color = "#d70018";
+      totalPriceEl.style.fontSize = "2em";
+      finalPriceDisplay.classList.add("hidden");
+      if (voucherInfoText) {
+        voucherInfoText.textContent = "Đã trừ vào thành tiền";
+      }
+    }
+  }
+
+  // --- HÀM 2: Mở Tab ---
+  function openTab(evt, tabName) {
+    var tabContents = document.querySelectorAll(".tab-content");
+    tabContents.forEach((tab) => (tab.style.display = "none"));
+    var tabButtons = document.querySelectorAll(".tab-button");
+    tabButtons.forEach((btn) => btn.classList.remove("active"));
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.classList.add("active");
+  }
+
+  // --- HÀM 3: Định dạng tiền tệ ---
+  function formatCurrency(value) {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  }
+
+  // --- HÀM 4: Lấy giá trị tiền (dạng số) ---
+  function getSelectedPriceValue() {
+    const variantRadio = document.querySelector(
+      '#variant-options input[name="variant"]:checked'
+    );
+    return variantRadio ? parseFloat(variantRadio.value) : 0;
+  }
+
+  // --- HÀM 5: Lưu giỏ hàng vào localStorage ---
+  function saveCart() {
+    localStorage.setItem("shoppingCart", JSON.stringify(cartItems));
+    updateFloatingCartIcon();
+  }
+
+  // --- HÀM 6: Tải giỏ hàng từ localStorage ---
+  function loadCart() {
+    cartItems = JSON.parse(localStorage.getItem("shoppingCart")) || [];
+    updateFloatingCartIcon();
+  }
+
+  // --- HÀM 7: Cập nhật Icon Nổi ---
+  function updateFloatingCartIcon() {
+    const floatingCartButton = document.getElementById("floating-cart-button");
+    const cartCountBadge = document.getElementById("floating-cart-count");
+    if (!floatingCartButton || !cartCountBadge) return;
+    if (cartItems.length > 0) {
+      const totalQuantity = cartItems.reduce(
+        (acc, item) => acc + item.quantity,
+        0
+      );
+      cartCountBadge.textContent = totalQuantity;
+      floatingCartButton.classList.remove("hidden");
+    } else {
+      floatingCartButton.classList.add("hidden");
+    }
+  }
+
+  // --- HÀM 8: Hiển thị nội dung Modal Giỏ Hàng ---
+  function renderCartModal() {
+    const cartItemList = document.getElementById("cart-item-list");
+    const cartTotalPrice = document.getElementById("cart-total-price");
+    let total = 0;
+    cartItemList.innerHTML = "";
+    if (cartItems.length === 0) {
+      cartItemList.innerHTML = "<li>Giỏ hàng của bạn đang trống.</li>";
+      cartTotalPrice.textContent = formatCurrency(0);
+      return;
+    }
+    cartItems.forEach((item) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+      const itemHTML = `
+                <li>
+                    <div class="item-info">
+                        <strong>${item.name}</strong>
+                        <span>${item.variant}, ${item.color} (x${
+        item.quantity
+      })</span>
+                    </div>
+                    <div class="item-price">${formatCurrency(itemTotal)}</div>
+                </li>
+            `;
+      cartItemList.innerHTML += itemHTML;
+    });
+    cartTotalPrice.textContent = formatCurrency(total);
+  }
+
+  // --- HÀM 9: Thêm sản phẩm vào giỏ ---
+  function addToCart(product) {
+    if (!product) return;
+    const existingItem = cartItems.find(
+      (item) =>
+        item.name === product.name &&
+        item.variant === product.variant &&
+        item.color === product.color
+    );
+    if (existingItem) {
+      existingItem.quantity += product.quantity;
+    } else {
+      cartItems.push(product);
+    }
+    saveCart();
+  }
+
+  // --- HÀM 10 (Gắn logic cho bộ lọc) ---
+  function attachFilterListeners() {
+    // Cập nhật lại danh sách nút và bình luận (bao gồm cả bình luận mới)
+    filterButtons = document.querySelectorAll(".reviews-filter .filter-btn");
+    commentItems = document.querySelectorAll(".comment-list-pro .comment-item-pro");
+
+    if (!filterButtons || !commentItems) return; // An toàn
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", function() {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        this.classList.add("active");
+        const filterValue = this.dataset.filter;
+
+        commentItems.forEach(comment => {
+          if (filterValue === "Tất cả") {
+            comment.style.display = "flex";
+          } else {
+            if (comment.dataset.rating === filterValue) {
+              comment.style.display = "flex";
+            } else {
+              comment.style.display = "none";
+            }
+          }
+        });
+      });
+    });
+  }
+
+
+  /* ============================================= */
+  /* CHẠY CODE KHI TRANG ĐÃ TẢI XONG 100%
+    /* ============================================= */
+  document.addEventListener("DOMContentLoaded", function () {
+    
+    // --- LOGIC CHUNG (chạy trên mọi trang) ---
+    loadCart();
+    
+    // Gắn listener cho các modal chung (Giỏ hàng, Xác nhận, Checkout)
+    const cartModal = document.getElementById("cart-modal");
+    const closeCartBtnX = document.getElementById("close-cart-btn-x");
+    const closeCartModalBtn = document.getElementById("close-cart-modal");
+    const goToCheckoutBtn = document.getElementById("go-to-checkout");
+    const clearCartBtn = document.getElementById("clear-cart-button");
+    if (closeCartBtnX) {
+      closeCartBtnX.addEventListener("click", function () {
+        cartModal.classList.add("hidden");
+      });
+    }
+    if (closeCartModalBtn) {
+      closeCartModalBtn.addEventListener("click", function () {
+        cartModal.classList.add("hidden");
+      });
+    }
+    if (goToCheckoutBtn) {
+      goToCheckoutBtn.addEventListener("click", function () {
+        cartModal.classList.add("hidden");
+        currentCheckoutItems = [...cartItems];
+        const cartTotal = cartItems.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        );
+        const checkoutModal = document.getElementById("checkout-modal");
+        const bankAmountSpan = document.getElementById("bank-amount");
+        if(checkoutModal && bankAmountSpan) {
+            bankAmountSpan.textContent = formatCurrency(cartTotal);
+            checkoutModal.classList.remove("hidden");
+        }
+      });
+    }
+    if (cartModal) {
+      cartModal.addEventListener("click", function (e) {
+        if (e.target === cartModal) {
+          cartModal.classList.add("hidden");
+        }
+      });
+    }
+    if (clearCartBtn) {
+      clearCartBtn.addEventListener("click", function () {
+        cartItems = [];
+        saveCart();
+        renderCartModal();
+        updateFloatingCartIcon();
+      });
+    }
+    const floatingCartButton = document.getElementById("floating-cart-button");
+    if (floatingCartButton) {
+      floatingCartButton.addEventListener("click", function () {
+        renderCartModal();
+        cartModal.classList.remove("hidden");
+      });
+    }
+
+
+    // --- "CẦU DAO AN TOÀN" ---
+    // Kiểm tra xem đây có phải là trang sản phẩm không
+    const productTitleElement = document.getElementById("product-title");
+    if (!productTitleElement) {
+      return; // Dừng script nếu không phải trang sản phẩm
+    }
+    // ---------------------------------
+    
+    // TỪ ĐÂY TRỞ XUỐNG: LÀ SCRIPT CHỈ CHẠY TRÊN TRANG SẢN PHẨM
+    
+    const productTitle = productTitleElement.textContent;
+    
+    // MỚI: Chỉ cần đọc userInfo, không cần hỏi
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+
+    // --- LOGIC 1: TÍNH GIÁ SẢN PHẨM ---
+    const variantRadios_DOM = document.querySelectorAll(
+      '#variant-options input[name="variant"]'
+    );
+    const quantityInput_DOM = document.getElementById("quantity");
+    if (quantityInput_DOM) {
+      variantRadios_DOM.forEach((radio) => {
+        radio.addEventListener("change", updateTotalPrice);
+      });
+      quantityInput_DOM.addEventListener("input", updateTotalPrice);
+      updateTotalPrice();
+    }
+
+    // --- LOGIC 2: MỞ POPUP XÁC NHẬN ---
+    const cartButton = document.getElementById("add-to-cart");
+    const confirmationModal = document.getElementById("confirmation-modal");
+    if (cartButton) {
+      cartButton.addEventListener("click", function () {
+        const selectedVariantRadio = document.querySelector(
+          '#variant-options input[name="variant"]:checked'
+        );
+        const selectedColorRadio = document.querySelector(
+          '#color-label-options input[name="color_option"]:checked'
+        );
+        const basePrice = getSelectedPriceValue();
+        const baseVoucher = parseFloat(
+          document.getElementById("voucher-base-discount").value
+        );
+        let finalUnitPrice = basePrice;
+        if (baseVoucher > 0 && baseVoucher < basePrice) {
+          finalUnitPrice = basePrice - baseVoucher;
+        }
+        tempProductToAdd = {
+          name: productTitle,
+          variant: selectedVariantRadio
+            ? selectedVariantRadio.dataset.name
+            : "",
+          color: selectedColorRadio ? selectedColorRadio.value : "",
+          quantity: parseInt(quantityInput_DOM.value),
+          price: finalUnitPrice,
+        };
+        confirmationModal.classList.remove("hidden");
+      });
+    }
+
+    // --- LOGIC 3, 4, 5 (Logic Mua hàng & Checkout) ---
+    const buyNowButton = document.getElementById("buy-now");
+    const checkoutModal = document.getElementById("checkout-modal");
+    const closeModalBtn = document.getElementById("close-modal-btn");
+    const confirmOrderBtn = document.getElementById("confirm-order");
+    const checkoutForm = document.getElementById("checkout-form");
+    const checkoutSuccess = document.getElementById("checkout-success");
+    const paymentRadios = document.querySelectorAll('input[name="payment"]');
+    const bankInfoDetails = document.getElementById("bank-info-details");
+    const bankAmountSpan = document.getElementById("bank-amount");
+    const transactionCodeGroup = document.getElementById(
+      "transaction-code-group"
+    );
+    const transactionCodeInput = document.getElementById("transaction-code");
+    
+    if (buyNowButton) {
+      buyNowButton.addEventListener("click", function () {
+        const basePrice = getSelectedPriceValue();
+        const baseVoucher = parseFloat(
+          document.getElementById("voucher-base-discount").value
+        );
+        let finalUnitPrice =
+          baseVoucher > 0 && baseVoucher < basePrice
+            ? basePrice - baseVoucher
+            : basePrice;
+        currentCheckoutItems = [
+          {
+            name: productTitle,
+            variant: document.querySelector(
+              '#variant-options input[name="variant"]:checked'
+            ).dataset.name,
+            color: document.querySelector(
+              '#color-label-options input[name="color_option"]:checked'
+            ).value,
+            quantity: parseInt(quantityInput_DOM.value),
+            price: finalUnitPrice,
+          },
+        ];
+        
+        // --- MỚI: Tự động điền thông tin ---
+        if (userInfo && userInfo.name) {
+          document.getElementById("fullname").value = userInfo.name;
+        }
+        if (userInfo && userInfo.phone) {
+          document.getElementById("phone").value = userInfo.phone;
+        }
+        // --- KẾT THÚC MỚI ---
+
+        const quantity = parseInt(quantityInput_DOM.value);
+        const totalVoucherDiscount = baseVoucher * quantity;
+        const currentTotal = basePrice * quantity;
+        const finalTotal = currentTotal - totalVoucherDiscount;
+        bankAmountSpan.textContent = formatCurrency(
+          finalTotal > 0 ? finalTotal : 0
+        );
+        checkoutModal.classList.remove("hidden");
+      });
+    }
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener("click", function () {
+        checkoutModal.classList.add("hidden");
+      });
+    }
+    if (checkoutModal) {
+      checkoutModal.addEventListener("click", function (e) {
+        if (e.target === checkoutModal) {
+          checkoutModal.classList.add("hidden");
+        }
+      });
+    }
+    if(paymentRadios) {
+        paymentRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            if (this.value === "bank") {
+              bankInfoDetails.classList.remove("hidden");
+              transactionCodeGroup.classList.remove("hidden");
+              confirmOrderBtn.textContent = "Xác nhận đã chuyển tiền";
+            } else {
+              bankInfoDetails.classList.add("hidden");
+              transactionCodeGroup.classList.add("hidden");
+              confirmOrderBtn.textContent = "Xác nhận đặt hàng";
+            }
+          });
+        });
+    }
+    if (confirmOrderBtn) {
+      confirmOrderBtn.addEventListener("click", function () {
+        const selectedPayment = document.querySelector(
+          'input[name="payment"]:checked'
+        ).value;
+        function showSuccess() {
+          try {
+            let allOrders = JSON.parse(localStorage.getItem("allOrders")) || [];
+            const finalTotal = parseFloat(
+              bankAmountSpan.textContent.replace(/[^0-9]/g, "")
+            );
+            const newOrder = {
+              orderId: `DH-${new Date().getTime()}`,
+              date: new Date().toISOString(),
+              items: currentCheckoutItems,
+              totalAmount: finalTotal,
+              customerInfo: {
+                name: document.getElementById("fullname").value,
+                phone: document.getElementById("phone").value,
+                address: `${document.getElementById("address").value}, ${
+                  document.getElementById("ward").value
+                }, ${document.getElementById("district").value}, ${
+                  document.getElementById("city").value
+                }`,
+              },
+            };
+            allOrders.push(newOrder);
+            localStorage.setItem("allOrders", JSON.stringify(allOrders));
+            const cartTotal = cartItems.reduce(
+              (acc, item) => acc + item.price * item.quantity,
+              0
+            );
+            if (cartItems.length > 0 && cartTotal === finalTotal) {
+              cartItems = [];
+              saveCart();
+            }
+            currentCheckoutItems = [];
+          } catch (e) {
+            console.error("Không thể lưu đơn hàng:", e);
+          }
+          checkoutForm.classList.add("hidden");
+          checkoutSuccess.classList.remove("hidden");
+          setTimeout(function () {
+            checkoutModal.classList.add("hidden");
+            checkoutForm.classList.remove("hidden");
+            checkoutSuccess.classList.add("hidden");
+            bankInfoDetails.classList.add("hidden");
+            transactionCodeGroup.classList.add("hidden");
+            transactionCodeInput.value = "";
+            document.querySelector('input[value="cod"]').checked = true;
+            document.getElementById("fullname").value = "";
+            document.getElementById("phone").value = "";
+            document.getElementById("address").value = "";
+            document.getElementById("ward").value = "";
+            document.getElementById("district").value = "";
+            document.getElementById("city").value = "";
+            window.location.href = "/don-hang/";
+          }, 3000);
+        }
+        if (selectedPayment === "bank") {
+          const txCode = transactionCodeInput.value;
+          if (txCode.trim() === "") {
+            alert("Vui lòng nhập Mã giao dịch để xác nhận.");
+          } else {
+            showSuccess();
+          }
+        } else {
+          showSuccess();
+        }
+      });
+    }
+
+    // --- LOGIC 7 (Modal Xác nhận) ---
+    const closeConfirmBtnX = document.getElementById("close-confirm-btn-x");
+    const cancelAddBtn = document.getElementById("cancel-add-to-cart");
+    const confirmAddBtn = document.getElementById("confirm-add-to-cart");
+    if (closeConfirmBtnX) {
+      closeConfirmBtnX.addEventListener("click", function () {
+        confirmationModal.classList.add("hidden");
+        tempProductToAdd = null;
+      });
+    }
+    if (cancelAddBtn) {
+      cancelAddBtn.addEventListener("click", function () {
+        confirmationModal.classList.add("hidden");
+        tempProductToAdd = null;
+      });
+    }
+    if (confirmAddBtn) {
+      confirmAddBtn.addEventListener("click", function () {
+        addToCart(tempProductToAdd);
+        tempProductToAdd = null;
+        confirmationModal.classList.add("hidden");
+      });
+    }
+
+    // --- LOGIC 9 (VÒNG QUAY VOUCHER) ---
+    const spinButton = document.getElementById("spin-voucher-button");
+    const voucherResultCoupon = document.getElementById(
+      "voucher-result-coupon"
+    );
+    const voucherAmountText = document.getElementById("voucher-amount-text");
+    const voucherSpunKey = "voucherSpun_" + productTitle;
+    const voucherAmountKey = "voucherAmount_" + productTitle;
+    if (sessionStorage.getItem(voucherSpunKey)) {
+      const storedAmount = parseFloat(sessionStorage.getItem(voucherAmountKey));
+      if (storedAmount > 0) {
+        document.getElementById("voucher-base-discount").value = storedAmount;
+        voucherAmountText.textContent = formatCurrency(storedAmount);
+        voucherResultCoupon.classList.remove("hidden");
+        spinButton.classList.add("hidden");
+        updateTotalPrice();
+      }
+    }
+    if (spinButton) {
+      spinButton.addEventListener("click", function () {
+        spinButton.disabled = true;
+        spinButton.classList.add("spinning");
+        spinButton.querySelector(".button-text").textContent = "Đang quay...";
+        setTimeout(function () {
+          const prizes = [
+            { value: 1000000, weight: 5 },
+            { value: 500000, weight: 15 },
+            { value: 200000, weight: 30 },
+            { value: 100000, weight: 50 },
+          ];
+          const weightedList = [];
+          prizes.forEach((p) => {
+            for (let i = 0; i < p.weight; i++) {
+              weightedList.push(p.value);
+            }
+          });
+          const randomPick =
+            weightedList[Math.floor(Math.random() * weightedList.length)];
+          document.getElementById("voucher-base-discount").value = randomPick;
+          voucherAmountText.textContent = formatCurrency(randomPick);
+          spinButton.classList.add("hidden");
+          voucherResultCoupon.classList.remove("hidden");
+          sessionStorage.setItem(voucherSpunKey, "true");
+          sessionStorage.setItem(voucherAmountKey, randomPick);
+          updateTotalPrice();
+        }, 2000);
+      });
+    }
+
+    // --- LOGIC 10 (LỌC BÌNH LUẬN) ---
+    attachFilterListeners(); // Gọi hàm để gắn logic cho các nút lọc
+
+
+    // --- LOGIC 11 (GỬI BÌNH LUẬN) ---
+    const submitCommentBtn = document.getElementById("submit-comment-btn");
+    const commentTextarea = document.getElementById("comment-textarea");
+    const commentListContainer = document.getElementById("comment-list-pro");
+
+    if (submitCommentBtn) {
+      submitCommentBtn.addEventListener("click", function(e) {
+        e.preventDefault(); 
+        
+        const commentText = commentTextarea.value.trim();
+        const ratingInput = document.querySelector('.comment-star-input input[name="rating"]:checked');
+        
+        if (!ratingInput) {
+          alert("Vui lòng chọn số sao đánh giá.");
+          return;
+        }
+        if (commentText === "") {
+          alert("Vui lòng nhập nội dung bình luận.");
+          return;
+        }
+        
+        const ratingValue = ratingInput.value;
+        const starText = "★".repeat(ratingValue) + "☆".repeat(5 - ratingValue);
+        
+        // LẤY TÊN USER TỪ LOCALSTORAGE (biến 'userInfo' đã được lấy ở trên)
+        let userName = (userInfo && userInfo.name) ? userInfo.name : 'Khách';
+        let avatarLetter = userName.charAt(0).toUpperCase();
+        
+        const newCommentHTML = `
+          <div class="comment-item-pro" data-rating="${ratingValue}">
+            <div class="comment-avatar">${avatarLetter}</div>
+            <div class="comment-content">
+              <div class="comment-author">
+                <strong>${userName}</strong>
+                <span>• vừa xong</span>
+              </div>
+              <div class="comment-stars">${starText}</div>
+              <p class="comment-text">${commentText}</p>
+            </div>
+          </div>
+        `;
+        
+        commentListContainer.insertAdjacentHTML("afterbegin", newCommentHTML);
+        
+        commentTextarea.value = "";
+        ratingInput.checked = false;
+        document.getElementById('char-counter').textContent = '0/3000';
+        
+        // CẬP NHẬT LẠI BỘ LỌC
+        attachFilterListeners();
+      });
+    }
+
+  }); // <-- Kết thúc DOMContentLoaded
+</script>
+
+{{ end }}

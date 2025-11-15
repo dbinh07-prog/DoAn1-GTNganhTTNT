@@ -1,0 +1,5 @@
+.theme-toggle,
+.dark-toggle,
+.mode-toggle {
+  display: none !important;
+}

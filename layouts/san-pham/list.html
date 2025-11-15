@@ -1,0 +1,27 @@
+{{ define "main" }}
+<link
+  rel="stylesheet"
+  href="{{ "/css/product-style.css" | relURL }}"
+/>
+
+<div class="product-list-page-container">
+  <h1>{{ .Title }}</h1>
+  <a href="/" class="back-to-home-btn">← Quay về trang chủ</a>
+
+  <div class="product-list-grid">
+    {{/* Lấy tất cả trang con (các sản phẩm) trong thư mục này */}}
+    {{ $pages := .Pages }}
+
+    {{/* Sắp xếp (tùy chọn, có thể bỏ) */}}
+    {{ $pages = $pages.ByTitle }}
+    
+    {{ range $pages }}
+      {{ partial "product-card.html" . }}
+    {{ end }}
+  </div>
+
+  {{ if eq (len $pages) 0 }}
+    <p>Chưa có sản phẩm nào cho dòng máy này.</p>
+  {{ end }}
+</div>
+{{ end }}

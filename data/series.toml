@@ -1,0 +1,32 @@
+# Đây là tệp dữ liệu cho các thẻ "Series" trên trang chủ
+# "url" phải khớp với đường dẫn thư mục bạn tạo ở Bước 1
+
+[[card]]
+  name = "iPhone 17 Series"
+  url = "/san-pham/iphone17series/"
+  image = "/images/series/iphone-17.jpg" # Bạn cần tự tạo và đặt ảnh này vào static/images/series/
+
+[[card]]
+  name = "iPhone 16 Series"
+  url = "/san-pham/iphone16series/"
+  image = "/images/series/iphone-16.jpg" # Bạn cần tự tạo và đặt ảnh này vào static/images/series/
+
+[[card]]
+  name = "iPhone 15 Series"
+  url = "/san-pham/iphone15series/"
+  image = "/images/series/iphone-15.jpg" # Bạn cần tự tạo và đặt ảnh này vào static/images/series/
+
+[[card]]
+  name = "iPhone 14 Series"
+  url = "/san-pham/iphone14series/"
+  image = "/images/series/iphone-14.jpg" # Bạn cần tự tạo và đặt ảnh này vào static/images/series/
+
+[[card]]
+  name = "iPhone 13 Series"
+  url = "/san-pham/iphone13series/"
+  image = "/images/series/iphone-13.jpg" # Bạn cần tự tạo và đặt ảnh này vào static/images/series/
+
+[[card]]
+  name = "iPhone 12 Series"
+  url = "/san-pham/iphone12series/"
+  image = "/images/series/iphone-12.jpg" # Bạn cần tự tạo và đặt ảnh này vào static/images/series/

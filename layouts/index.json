@@ -1,0 +1,13 @@
+{{- $data := slice -}}
+{{/* 1. Lấy trang section "san-pham" */}}
+{{- $sanPhamSection := .Site.GetPage "san-pham" -}}
+
+{{/* 2. Lặp qua các "Series" (iphone17series, 16...) bên trong 'san-pham' */}}
+{{- range $sanPhamSection.Sections -}}
+    {{/* 3. Lặp qua từng sản phẩm (iphone-17-pro...) bên trong mỗi series */}}
+    {{- range .Pages -}}
+        {{/* 4. Thêm dữ liệu sản phẩm vào "database" */}}
+        {{- $data = $data | append (dict "title" .Title "url" .Permalink "image" (.Params.featured_image | relURL)) -}}
+    {{- end -}}
+{{- end -}}
+{{- $data | jsonify -}}

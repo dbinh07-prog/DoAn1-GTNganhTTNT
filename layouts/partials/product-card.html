@@ -1,0 +1,59 @@
+{{/* Lấy dữ liệu sản phẩm (biến . là 1 trang sản phẩm) */}}
+{{ $product := . }}
+{{ $variants := $product.Params.variants }}
+{{ $colors := $product.Params.colors }}
+
+{{/* Lấy giá đầu tiên (rẻ nhất) làm giá đại diện */}}
+{{ $firstVariant := index $variants 0 }}
+{{ $basePrice := $firstVariant.price | default 0 }}
+
+<a href="{{ $product.Permalink }}" class="product-card-item-link">
+  <div class="product-card-item">
+    <div class="product-card-image-wrapper">
+      {{ with $product.Params.featured_image }}
+        <img src="{{ . | relURL }}" alt="{{ $product.Title }}" class="product-card-image">
+      {{ else }}
+        <img src="https://via.placeholder.com/400x400.png?text=No+Image" alt="{{ $product.Title }}" class="product-card-image">
+      {{ end }}
+
+      {{ with $product.Params.features }}
+      <div class="product-card-features">
+        {{ range . }}
+          <div class="feature-icon">
+             <span>{{ . }}</span>
+          </div>
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+
+    <div class="product-card-info">
+      {{ if $product.Params.show_gop }}
+        <span class="product-card-installment">Trả góp 0%</span>
+      {{ end }}
+
+      {{/*  <p class="product-card-price">{{ printf "%.0f" $basePrice | humanize | replace " " "." }}đ</p>  */}}
+
+      <h3 class="product-card-title">{{ $product.Title }}</h3>
+
+      {{/*  {{ with $colors }}
+      <div class="product-card-colors">
+        {{ range first 3 . }}
+          <span class="color-swatch" style="background-color: {{ .hex | default "#ccc" }};"></span>
+        {{ end }}
+      </div>
+      {{ end }}  */}}
+
+      {{ with $variants }}
+      <div class="product-card-variants">
+        {{ range first 3 . }}
+          <span class="variant-badge">{{ .name }}</span>
+        {{ end }}
+        {{ if gt (len .) 3 }}
+          <span class="variant-badge">...</span>
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</a>

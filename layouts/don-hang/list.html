@@ -1,0 +1,78 @@
+{{ define "main" }}
+<link
+  rel="stylesheet"
+  href="{{ "/css/product-style.css" | relURL }}"
+/>
+
+<div class="order-page-container">
+  <h1>{{ .Title }}</h1>
+  <a href="/" class="back-to-home-btn">← Quay về trang chủ</a>
+
+  <div id="order-list-container">
+    </div>
+</div>
+
+<script>
+  // Hàm định dạng tiền tệ (cần dùng lại)
+  function formatCurrency(value) {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  }
+
+  // Chạy khi trang tải xong
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("order-list-container");
+    const allOrders = JSON.parse(localStorage.getItem("allOrders")) || [];
+
+    if (allOrders.length === 0) {
+      container.innerHTML = "<p>Bạn chưa có đơn hàng nào.</p>";
+      return;
+    }
+
+    // Đảo ngược mảng để hiển thị đơn mới nhất lên đầu
+    allOrders.reverse();
+
+    allOrders.forEach((order) => {
+      // Bắt đầu tạo HTML cho danh sách sản phẩm
+      let itemsHTML = "";
+      order.items.forEach((item) => {
+        itemsHTML += `
+          <li>
+            ${item.name} - ${item.variant}, ${item.color} (x${
+          item.quantity
+        })
+            <strong>${formatCurrency(item.price * item.quantity)}</strong>
+          </li>
+        `;
+      });
+      // Kết thúc danh sách sản phẩm
+
+      // Tạo HTML cho toàn bộ thẻ đơn hàng
+      const orderCardHTML = `
+        <div class="order-card">
+          <div class="order-header">
+            <h3>Mã đơn: ${order.orderId}</h3>
+            <span>Ngày đặt: ${new Date(order.date).toLocaleString("vi-VN")}</span>
+            <br>
+            <span>Khách hàng: ${order.customerInfo.name} - ${
+        order.customerInfo.phone
+      }</span>
+          </div>
+          <ul class="order-item-list">
+            ${itemsHTML}
+          </ul>
+          <div class="order-footer">
+            <strong>Tổng cộng: ${formatCurrency(order.totalAmount)}</strong>
+          </div>
+        </div>
+      `;
+
+      // Chèn thẻ vào container
+      container.innerHTML += orderCardHTML;
+    });
+  });
+</script>
+
+{{ end }}
