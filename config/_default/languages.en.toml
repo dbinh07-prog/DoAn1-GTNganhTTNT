@@ -11,7 +11,7 @@ title = "Mobile Center"
   dateFormat = "2 January 2006"
   logo = "images/Logo-dai-hoc-khoa-hoc-tu-nhien.png"
   secondaryLogo = "images/Logo-dai-hoc-khoa-hoc-tu-nhien.png"
-  description = ""
+  description = "Chào mừng đến với cửa hàng !!!"
   # copyright = "Copy, _right?_ :thinking_face:"
 
 [params.author]
